@@ -2,10 +2,19 @@
 
 import os
 api_key = 'klucz' #Klucz api umożliwiający prace z googlemaps API.
-import googlemap
+import googlemaps
 
 gmaps = googlemaps.Client(key=api_key) #Za każdym wywołaniem funkcji z biblioteki googlemaps'a potrzebny jest klucz api.
-mainnode = gmaps.geocode('Uniwersytet Wrocławski: Wydział Fizyki i Astronomii, Plac Maksa Borna, Wrocław')[0] # Sposób na wypisanie długości i szerokości geograficznych miejsc, które są potrzebne.
-geocode_step1 = mainnode['geometry']['location'] #zwężanie wyszukiwań.
-geocode_step2 = geocode_step1['lat'], geocode_step1['lng'] #wyciągniecie potrzebnych nam danych.
-print (geocode_step2)
+#mainnode = gmaps.geocode('Uniwersytet Wrocławski: Wydział Fizyki i Astronomii, Plac Maksa Borna, Wrocław')[0] # Sposób na wypisanie długości i szerokości geograficznych miejsc, które są potrzebne.
+#geocode_step1 = mainnode['geometry']['location'] #zwężanie wyszukiwań.
+#geocode_step2 = geocode_step1['lat'], geocode_step1['lng'] #wyciągniecie potrzebnych nam danych.
+#print (geocode_step2)
+distance = gmaps.distance_matrix('wrocław','lubin')
+distance2 = distance['rows'][0]['elements'][0]['duration']['value']/60 
+
+class MainNode:
+	index = 1
+	lat = 51.1163217
+	lng = 17.02805
+	
+
