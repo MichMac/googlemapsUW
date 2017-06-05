@@ -3,7 +3,7 @@
 import os
 api_key = 'AIzaSyAezmqxQYAQXzVQnZPitum5lw6xZPG9HAo' #Klucz api umożliwiający prace z googlemaps API.
 import googlemaps
-
+from numpy import*
 gmaps = googlemaps.Client(key=api_key) #Za każdym wywołaniem funkcji z biblioteki googlemaps'a potrzebny jest klucz api.
 #mainnode = gmaps.geocode('Uniwersytet Wrocławski: Wydział Fizyki i Astronomii, Plac Maksa Borna, Wrocław')[0] # Sposób na wypisanie długości i szerokości geograficznych miejsc, które są potrzebne.
 #geocode_step1 = mainnode['geometry']['location'] #zwężanie wyszukiwań.
@@ -19,23 +19,30 @@ class MainNode:
 	
 mainnode = MainNode()
 
-class Node():
-	def __init__(self,index,latlng,time=0,distance=0):
+
+node = zeros((30,30), float)
+print (node)
+
+
+class Node:
+	distance = 0
+	time = 0
+	def __init__(self,index,latlng):
 		self.index = index
 		self.latlng = latlng
-		self.time = time
-		self.distance = distance
+		
 	
 		
-	def GetDirections(latlng,time,distance):
+	def GetDirections():
 		distance1 = gmaps.distance_matrix(MainNode.latlng,self.latlng)
 		distance2 = distance1['rows'][0]['elements'][0]['duration']['value']/60
 		self.time = distance2
+		return distance2
 		
 		
-punkt1 = Node(2,(51.116234,17.029911))
 
-print (punkt1.time)
+
+
 
 
 def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworzenie punktów (jeszcze nie działająca)
@@ -45,7 +52,7 @@ def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworze
 			lng = lng_min + j*(lng_max - lng_min)/30
 			
 			
-Lattice(17.02,17.03,51.11,51.12)
+Lattice
 
 
 
