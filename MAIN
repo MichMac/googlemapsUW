@@ -38,7 +38,7 @@ punkt1 = Node(2,(51.116234,17.029911))
 print (punkt1.time)
 
 
-def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworzenie punktów (nie działająca)
+def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworzenie punktów (jeszcze nie działająca)
 	for i in range(0,30):
 		for j in range(0,30):
 			lat = lat_min + i*(lat_max - lat_min)/30
