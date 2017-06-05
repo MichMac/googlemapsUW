@@ -19,22 +19,39 @@ class MainNode:
 	
 mainnode = MainNode()
 
-class Node:
+class Node():
 	def __init__(self,index,latlng,time=0,distance=0):
 		self.index = index
 		self.latlng = latlng
 		self.time = time
 		self.distance = distance
 	
-	def __repr__(self):
-		return "self.index"
 		
-	def GetDirections(mainnode.latlng,self.latlng,self.time):
-		distance1 = gmaps.distance_matrix('mainnode.latlng','self.latlng')
+	def GetDirections(latlng,time,distance):
+		distance1 = gmaps.distance_matrix(MainNode.latlng,self.latlng)
 		distance2 = distance1['rows'][0]['elements'][0]['duration']['value']/60
 		self.time = distance2
 		
+		
 punkt1 = Node(2,(51.116234,17.029911))
+
+print (punkt1.time)
+
+node[i][j] = [][]
+def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworzenie punktów (nie działająca)
+	for i in range(0,30):
+		for j in range(0,30):
+			lat = lat_min + i*(lat_max - lat_min)/30
+			lng = lng_min + j*(lng_max - lng_min)/30
+			node[i][j] = Node(lat,lng)
+			
+Lattice(17.02,17.03,51.11,51.12)
+
+
+
+
+
+
 
 
 
