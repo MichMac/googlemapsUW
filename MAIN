@@ -43,7 +43,7 @@ def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworze
 		for j in range(0,30):
 			lat = lat_min + i*(lat_max - lat_min)/30
 			lng = lng_min + j*(lng_max - lng_min)/30
-			node[i][j] = Node(lat,lng)
+			
 			
 Lattice(17.02,17.03,51.11,51.12)
 
