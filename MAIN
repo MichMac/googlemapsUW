@@ -15,46 +15,46 @@ gmaps = googlemaps.Client(key=api_key) #Za każdym wywołaniem funkcji z bibliot
 
 class MainNode:
 	index = 1
-	latlng = (51.1163217, 17.02805)
+	lat = 51.1163217
+	lng = 17.02805
 	
 mainnode = MainNode()
 
 
-node = zeros((30,30), float)
-print (node)
 
 
-class Node:
+
+class Node():
 	distance = 0
 	time = 0
-	def __init__(self,index,latlng):
-		self.index = index
-		self.latlng = latlng
+	def __init__(self,lat,lng):
+		self.lat = lat
+		self.lng = lng
 		
 	
 		
-	def GetDirections():
-		distance1 = gmaps.distance_matrix(MainNode.latlng,self.latlng)
+	def GetTime(self,mmainnode):
+		distance1 = gmaps.distance_matrix([(self.lat,self.lng)],[(mmainnode.lat,mmainnode.lng)],mode="walking")
 		distance2 = distance1['rows'][0]['elements'][0]['duration']['value']/60
 		self.time = distance2
 		return distance2
 		
 		
-
-
-
-
-
-def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworzenie punktów (jeszcze nie działająca)
+def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworzenie punktów
+	nodes=[]
 	for i in range(0,30):
+		row =[]
 		for j in range(0,30):
 			lat = lat_min + i*(lat_max - lat_min)/30
 			lng = lng_min + j*(lng_max - lng_min)/30
-			
-			
-Lattice
+			row.append(Node(lat,lng))
+		nodes.append(row)
+	return nodes
 
+	
 
+nodes = Lattice(17.02,17.03,51.11,51.12)
+print(nodes[0][0].GetTime(mainnode))
 
 
 
