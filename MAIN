@@ -3,7 +3,8 @@
 import os
 api_key = 'AIzaSyAezmqxQYAQXzVQnZPitum5lw6xZPG9HAo' #Klucz api umożliwiający prace z googlemaps API.
 import googlemaps
-import gmplot
+import matplotlib.pyplot as plt
+import matplotlib
 gmaps = googlemaps.Client(key=api_key) #Za każdym wywołaniem funkcji z biblioteki googlemaps'a potrzebny jest klucz api.
 #mainnode = gmaps.geocode('Uniwersytet Wrocławski: Wydział Fizyki i Astronomii, Plac Maksa Borna, Wrocław')[0] # Sposób na wypisanie długości i szerokości geograficznych miejsc, które są potrzebne.
 #geocode_step1 = mainnode['geometry']['location'] #zwężanie wyszukiwań.
@@ -41,27 +42,89 @@ class Node():
 		
 def Lattice(lng_min,lng_max,lat_min,lat_max): # funkcja odpowiadająca za tworzenie punktów
 	nodes=[]
-	for i in range(0,30):
+	for i in range(0,3):
 		row =[]
-		for j in range(0,30):
-			lat = lat_min + i*(lat_max - lat_min)/30
-			lng = lng_min + j*(lng_max - lng_min)/30
+		for j in range(0,3):
+			lat = lat_min + i*(lat_max - lat_min)/3
+			lng = lng_min + j*(lng_max - lng_min)/3
 			row.append(Node(lat,lng))
 		nodes.append(row)
 	return nodes
 
+
 	
 nodes = Lattice(16.932804,17.123005,51.075253,51.168345)
 
-for i in range(0,30):
-	for j in range(0,30):
+for i in range(0,3):
+	for j in range(0,3):
 		nodes[i][j].GetTime(mainnode)
 		print(str(i)+" "+str(j)+" "+str(nodes[i][j].time))
 
-#print(nodes[0][0].time)
-#print(nodes[0][1].time)
-#print(nodes[1][2].time)
+print(nodes[0][1].time)
+print(nodes[0][2].time)
 
+
+nodes_lat=[]
+nodes_lng=[]
+def ListOfNodes(lng_min,lng_max,lat_min,lat_max):
+
+	for i in range(0,3):
+		rowx =[]
+		rowy =[]
+		for j in range(0,3):
+			lat = lat_min + i*(lat_max - lat_min)/3
+			lng = lng_min + j*(lng_max - lng_min)/3
+			rowx.append(lng)
+			rowy.append(lat)
+			
+		nodes_lat.append(rowy)
+		nodes_lng.append(rowx)
+	return nodes_lat,nodes_lng
+
+ListOfNodes(16.932804,17.123005,51.075253,51.168345)
+
+#for i in range(0,3):
+#	for j in range(0,3):
+#		print(nodes[i][j].lat," ",nodes[i][j].lng)
+#print ("TEST2")
+#for i in range(0,3):
+#	for j in range(0,3):
+#		print(nodes_lat[i][j]," ",nodes_lng[i][j])
+
+x = []
+y = []
+c = []
+for i in range(0,3):
+	for j in range(0,3):
+		x.append(nodes_lng[i][j])
+		y.append(nodes_lat[i][j])
+		c.append(nodes[i][j].time)
+		
+		
+print(x)
+print(y)
+print(c)
+
+
+colormap="plasma"
+
+x_data=[x]
+
+y_data=[y]
+
+c_data=[c]
+
+fig = plt.figure()
+fig.set_facecolor('white')
+ax = fig.add_subplot(1,1,1)
+
+p1 = ax.scatter(x_data, y_data, c=c_data, s=50, cmap=colormap, edgecolor='none', alpha=0.9)
+
+ax.grid(True)
+
+fig.colorbar(p1)
+
+plt.show()
 
 
 
