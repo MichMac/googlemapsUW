@@ -1,0 +1,156 @@
+#!/usr/bin/env python3
+
+
+
+api_key = 'AIzaSyAezmqxQYAQXzVQnZPitum5lw6xZPG9HAo' 
+"""Powyższa zmienna przechowuje klucz umożliwiający używanie biblioteki google maps API"""
+
+import time_backup
+import googlemaps
+import matplotlib.pyplot as plt
+from scipy.misc import imread
+gmaps = googlemaps.Client(key=api_key) 
+
+""" Powyższa zmienna przechowuje klase 'client' dzięki której będziemy mogli wysyłać żądania do Google Maps API """
+
+
+class MainNode:
+	index = 1
+	lat = 51.1163217
+	lng = 17.02805
+
+""" Jest to klasa umożliwiająca utworzenie głównego puntku z którego bedą się odwoływać pozostałe punkty """
+	
+mainnode = MainNode()
+
+class Node():
+	distance = 0
+	time = 0
+	def __init__(self,lat,lng):
+		self.lat = lat
+		self.lng = lng
+		
+"""	Klasa umożliwiająca tworzenie kolejnych punktów """
+	
+		
+	def GetTime(self,mmainnode):
+		
+		distance1 = gmaps.distance_matrix([(self.lat,self.lng)],[(mmainnode.lat,mmainnode.lng)],mode="transit")
+		if 'duration' in distance1['rows'][0]['elements'][0]:
+			distance2 = distance1['rows'][0]['elements'][0]['duration']['value']/60
+			self.time = distance2
+			return distance2
+		else:
+			pass
+			
+""" Funkcja pobiera informacje dotyczące podanego punktu oraz naszego głównego punktu (latitude,longtitude)
+ i oblicza czas podróży. 
+ Trzeba tu zaznaczyć, że sposób w jaki chcemy zobaczyć ile potrwa taka podróż innymi środkami transportu można przedstawić poprzez
+ zmiane w atrybucie "mode". Poniżej podane są opcje z jakich możemy skorzystać:
+ -"driving" - Jazda samochodem
+ -"walking" - Na pieszo
+ -"transit" - Bus lub tramwaj
+ -"bicycling" - Na rowerze """
+
+def Lattice(lng_min,lng_max,lat_min,lat_max): 
+	nodes=[]
+	for i in range(0,30):
+		row =[]
+		for j in range(0,30):
+			lat = lat_min + i*(lat_max - lat_min)/30
+			lng = lng_min + j*(lng_max - lng_min)/30
+			row.append(Nodepo(lat,lng))
+		nodes.append(row)
+	return nodes
+	
+""" Funkcja ta umożliwia stworzenie siatki punktów. Na ilość tych punktów decyduje tutaj
+'range'. W tym przypadku stworzy nam tablice 30X30 wypełnioną obiektami z zdefiniowanymi dla siebie 
+wartościami latitude i longtitude.
+Jako argumenty funkcja ta przyjmuje minimalną długość geograficzną,maksymalną długość geograficzną, minimalną szerokość geograficzną
+oraz maksymalną szerokość geograficzną  """
+
+	
+nodes = Lattice(16.932804,17.123005,51.075253,51.168345)
+
+""" Wywołanie funkcji. Jako atrybuty są tu podane koordynaty definiujące obszar Wrocławia. """
+
+for i in range(0,30):
+	for j in range(0,30):
+		nodes[i][j].GetTime(mainnode)
+		print(str(i)+" "+str(j)+" "+str(nodes[i][j].time))
+
+""" Pętla umożliwiająca dla kolejnych obiektów (punktów) obliczanie czasu i przypisanie tej wartości ich zmiennej 'time' """
+
+
+nodes_lat=[]
+nodes_lng=[]
+
+""" Zdefiniowanie pustych list w której będa umieszczane wartości długości geograficznej i szerokości geograficznej
+dla poszczególnych punktów. """
+
+def ListOfNodes(lng_min,lng_max,lat_min,lat_max):
+
+	for i in range(0,30):
+		rowx =[]
+		rowy =[]
+		for j in range(0,30):
+			lat = lat_min + i*(lat_max - lat_min)/30
+			lng = lng_min + j*(lng_max - lng_min)/30
+			rowx.append(lng)
+			rowy.append(lat)
+			
+		nodes_lat.append(rowy)
+		nodes_lng.append(rowx)
+	return nodes_lat,nodes_lng
+
+""" Funkcja dodająca do wyżej zdefiniowanych list wartości latitude i longtitude """
+
+ListOfNodes(16.932804,17.123005,51.075253,51.168345)
+
+x = []
+y = []
+c = []
+
+""" Powyższe listy bedą przechowywać wartości potrzebne do wyrysowania wykresu z punktami. 
+Jest lista x odpowiadająca osi x i będzie ona przechowywać wartości longtitude, kolejno 
+y odpowiadająca osi y będzie przechowywać wartości latitude, na koniec lista przechowywująca
+czas podróży. """
+
+for i in range(0,30):
+	for j in range(0,30):
+		x.append(nodes_lng[i][j])
+		y.append(nodes_lat[i][j])
+		c.append(nodes[i][j].time)
+
+""" Wypełnanie powyżej zdefiniowanych list """		
+		
+print(x)
+print(y)
+print(c)
+
+
+colormap="plasma"
+
+x_data=[x]
+y_data=[y]
+c_data=[c]
+img = imread("staticmap.png")
+fig = plt.figure()
+fig.set_facecolor('white')
+ax = fig.add_subplot(1,1,1)
+plt.imshow(img,zorder=0,extent=[16.932804,17.123005,51.075253,51.168345])
+p1 = ax.scatter(x_data, y_data, c=c_data, s=50, cmap=colormap, edgecolor='none', alpha=0.9,zorder=1)
+
+ax.grid(True)
+
+fig.colorbar(p1)
+plt.show()
+
+""" Zmienna 'img' przechowuje funkcje umożliwiającą za tło wykresu przyjąć mape Wrocławia.
+plt.imshow umożliwia dostosowanie skali wartości szerokości i długości geograficznej (x,y) wykresu.
+ax.scatter tworzy wykres korzystając z poprzednio utworzonych list.
+Atrybut cmap funkcji scatter umożliwia utworzenie na wykresie tz. 'mapy kolorów'.
+Dzięki liście przechowywującej wartości czasów na wykresie pojawiają sie punkty,
+z określonymi kolorami definiującymi ich waratości.
+
+
